@@ -1,45 +1,41 @@
 import cv2
-import mediapipe as mp
 import pyautogui
+import time
 
-# Initialize MediaPipe Face Mesh
-mp_face_mesh = mp.solutions.face_mesh
-face_mesh = mp_face_mesh.FaceMesh(refine_landmarks=True)
+# 1. Load the pre-trained Haar Cascade models
+# We use 'cv2.data.haarcascades' to find the files inside the local installation folder
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye_tree_eyeglasses.xml')
 
+# 2. Open the webcam feed
 cap = cv2.VideoCapture(0)
 
-# Eye landmark indices for MediaPipe
-LEFT_EYE = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398]
+# State variables for blink detection
+is_blinking = False
+last_action_time = 0
 
-while cap.isOpened():
-    success, image = cap.read()
-    if not success: break
+print("--- SYSTEM ACTIVE ---")
+print("Blink firmly to trigger a Spacebar press.")
+print("Press 'ESC' in the camera window to exit.")
 
-    # Convert to RGB for MediaPipe
-    rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    results = face_mesh.process(rgb_image)
-
-    if results.multi_face_landmarks:
-        for face_landmarks in results.multi_face_landmarks:
-            # Logic: Check the distance between upper and lower eyelid landmarks
-            # For simplicity, we'll check landmark 159 (top) and 145 (bottom)
-            upper_pin = face_landmarks.landmark[159]
-            lower_pin = face_landmarks.landmark[145]
-            
-            distance = abs(upper_pin.y - lower_pin.y)
-
-            # Threshold: If distance is small, it's a blink
-            if distance < 0.007: 
-                cv2.putText(image, "BLINK DETECTED!", (50, 50), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-                
-                # THE ACTION: Press spacebar
-                pyautogui.press('space')
-                # Add a small delay so it doesn't spam the key
-                cv2.waitKey(200) 
-
-    cv2.imshow('Blink Detection for Her', image)
-    if cv2.waitKey(5) & 0xFF == 27: break
-
-cap.release()
-cv2.destroyAllWindows()
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
+    
+    # Mirror the frame for a more natural selfie view
+    frame = cv2.flip(frame, 1)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    # Detect faces in the frame
+    faces = face_cascade.detectMultiScale(gray, 1.1, 7)
+    
+    for (x, y, w, h) in faces:
+        # Draw a blue rectangle around the face
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        
+        # Look for eyes ONLY within the face region to save CPU
+        roi_gray = gray[y:y+h, x:x+w]
+        roi_color = frame[y:y+h, x:x+w]
+        
+        # Tweak these numbers (1.1,
