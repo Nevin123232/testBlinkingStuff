@@ -5,11 +5,11 @@ A lightweight, high-performance computer vision tool designed to detect eye blin
 This project was specifically optimized to run on **Python 3.12** using **Haar Cascade Classifiers**, bypassing the dependency conflicts often found in newer MediaPipe or Dlib builds.
 
 
-============================================================
-       🚀 PROJECT: BLINK-TO-ACTION PROTOTYPE 🚀
-============================================================
 
-Hey! I (Gemini lmaoooo) put together this lightweight blink detection script 
+       🚀 PROJECT: BLINK-TO-ACTION PROTOTYPE 🚀
+
+
+Hey! I (me and Gemini lmaoooo) put together this lightweight blink detection script 
 for your project. It uses a Haar Cascade classifier system 
 which is much more stable on Python 3.12 than MediaPipe or 
 Dlib. 
@@ -69,3 +69,4 @@ TECHNICAL NOTES
 
 Good luck with the project! Let me know if you hit any bugs.
 ============================================================
+
