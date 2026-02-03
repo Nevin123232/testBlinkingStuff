@@ -43,9 +43,9 @@ pip install opencv-python pyautogui
 ------------------------------------------------------------
 STEP 3: RUN THE SCRIPT
 ------------------------------------------------------------
-Make sure 'blink_action.py' is in this folder, then run:
+Make sure 'testscript.py' is in this folder, then run:
 
-python blink_action.py
+python testscript.py
 
 ------------------------------------------------------------
 💡 HOW TO USE IT
@@ -69,4 +69,5 @@ TECHNICAL NOTES
 
 Good luck with the project! Let me know if you hit any bugs.
 ============================================================
+
 
